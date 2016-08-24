@@ -1,0 +1,22 @@
+#!/bin/bash
+
+ls_grammar () {
+    docker run --rm -t rebase/antlr4 sh -c "cd /grammars-v4; ls -a */*.g4"
+}
+
+build () {
+    docker build -t rebase/antlr4 -f antlr4-Dockerfile .
+}
+
+_sh_antlr4 () {
+    docker run --rm -it rebase/antlr4 sh
+}
+
+
+gen_parser () {
+    docker run --rm -v $2:/out -t rebase/antlr4 antlr4 -lib /grammars-v4 -o /out $1
+}
+
+pull () {
+    docker pull pottava/gradle:2
+}
