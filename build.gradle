@@ -4,6 +4,8 @@ version = '1.0'
 
 apply plugin: 'java'
 
+archivesBaseName = 'parser'
+
 repositories {
     mavenCentral()
 }
