@@ -23,6 +23,11 @@ pull () {
 }
 
 
+launch_gradle () {
+    docker run -t -v $PWD:/app --name gradle rebase/gradle gradle build --continuous
+}
+
+
 gradle () {
-    docker run --rm -it -v $PWD:/app rebase/gradle gradle $*
+    docker exec -it gradle gradle $*
 }

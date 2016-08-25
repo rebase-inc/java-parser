@@ -1,15 +1,47 @@
-task compile << {
-    println 'compiling source'
+description = 'Parser server for Rebase'
+
+version = '1.0'
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
 }
 
-task compileTest(dependsOn: compile) << {
-    println 'compiling unit tests'
+dependencies {
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.4.Final'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
-task test(dependsOn: [compile, compileTest]) << {
-    println 'running unit tests'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Rebase ANTLR Parser',
+                   'Implementation-Version': version,
+                    'Main-Class': 'discard.DiscardServer'
+    }
 }
 
-task dist(dependsOn: [compile, test]) << {
-    println 'building the distribution'
+task fatJar(type: Jar) {
+  manifest.from jar.manifest
+  classifier = 'all'
+  from {
+    configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+  }
+  with jar
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'jars'
+       }
+    }
+}
+
+artifacts {
+    archives fatJar
 }
