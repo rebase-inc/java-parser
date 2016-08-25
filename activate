@@ -1,20 +1,20 @@
 #!/bin/bash
 
-ls_grammar () {
+ls-grammar () {
     docker run --rm -t rebase/antlr4 sh -c "cd /grammars-v4; ls -a */*.g4"
 }
 
-build_docker () {
+build-docker () {
     docker build -t rebase/antlr4 docker/antlr4
     docker build -t rebase/gradle docker/gradle
 }
 
-_sh_antlr4 () {
+_sh-antlr4 () {
     docker run --rm -it rebase/antlr4 sh
 }
 
 
-gen_parser () {
+gen-parser () {
     docker run --rm -v $2:/out -t rebase/antlr4 antlr4 -lib /grammars-v4 -o /out $1
 }
 
@@ -23,11 +23,32 @@ pull () {
 }
 
 
-launch_gradle () {
+launch-gradle () {
     docker run -t -v $PWD:/app --name gradle rebase/gradle gradle build --continuous
 }
 
 
 gradle () {
     docker exec -it gradle gradle $*
+}
+
+make-jre-image () {
+    # requires: https://github.com/mvanholsteijn/strip-docker-image
+    # shrinks 311->128MB
+    # Investigate https://github.com/docker-slim/docker-slim
+    # as it seems to gather momentum.
+    # They claim having Java container down to 100MB.
+
+    strip-docker-image -i openjdk:8-jre -t rebase/jre  \
+        -p openjdk-8-jre-headless:amd64  \
+        -f /etc/passwd \
+        -f '/lib/*/libnss*' \
+        -f /bin/ls \
+        -f /bin/cat \
+        -f /bin/sh \
+        -f /bin/mkdir \
+        -f /bin/ps \
+        -f /bin/sh \
+        -f /var/run \
+        -f /run
 }
