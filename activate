@@ -15,7 +15,12 @@ _sh-antlr4 () {
 
 
 gen-parser () {
-    docker run --rm -v $2:/out -t rebase/antlr4 antlr4 -lib /grammars-v4 -o /out $1
+    docker run --rm -v $2:/out -t rebase/antlr4 \
+        antlr4 \
+            -lib /grammars-v4 \
+            -o /out \
+            -package "lang.$(dirname $1)" \
+            -visitor $1
 }
 
 pull () {
@@ -24,7 +29,7 @@ pull () {
 
 
 launch-gradle () {
-    docker run -t -v $PWD:/app --name gradle rebase/gradle gradle build --continuous
+    docker run -d -v $PWD:/app --name gradle rebase/gradle 
 }
 
 

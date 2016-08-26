@@ -1,6 +1,6 @@
 FROM alpine:3.4
 
-ENV GRADLE_VERSION=2.14.1
+ENV GRADLE_VERSION=3.0
 
 RUN apk update && \
     apk add openjdk8 curl && \
@@ -21,3 +21,4 @@ VOLUME /app /root/.gradle/caches
 
 WORKDIR /app
 
+CMD ["gradle", "--foreground"]
