@@ -20,7 +20,8 @@ gen-parser () {
             -lib /grammars-v4 \
             -o /out \
             -package "lang.$(dirname $1)" \
-            -visitor $1
+            -no-listener \
+            -no-visitor
 }
 
 pull () {
