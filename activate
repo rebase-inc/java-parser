@@ -34,6 +34,10 @@ launch-gradle () {
     docker run -d -v $PWD:/app --name gradle rebase/gradle 
 }
 
+_sh-gradle () {
+    docker exec -it gradle sh
+}
+
 
 gradle () {
     docker exec -it gradle gradle $*
