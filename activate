@@ -15,13 +15,14 @@ _sh-antlr4 () {
 
 
 gen-parser () {
-    docker run --rm -v $2:/out -t rebase/antlr4 \
+    docker run --rm -v "$PWD/src/main/java/lang":/out -t rebase/antlr4 \
         antlr4 \
             -lib /grammars-v4 \
             -o /out \
             -package "lang.$(dirname $1)" \
             -no-listener \
-            -no-visitor
+            -no-visitor \
+            $1
 }
 
 pull () {
