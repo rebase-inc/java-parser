@@ -24,7 +24,7 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
         if (methodNumber == 0) {
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
-            StringReader code = new StringReader(gson.fromJson(array.get(1), String.class));
+            StringReader code = new StringReader(gson.fromJson(array.get(2), String.class));
             TechProfile profile = language.parse(code);
             ctx.write(gson.toJson(profile));
         } else if (methodNumber == 1) {

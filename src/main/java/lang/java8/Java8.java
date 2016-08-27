@@ -16,6 +16,7 @@ import scan.TechProfile;
 
 public class Java8 implements Language {
 
+    @Override
     public TechProfile parse(Reader code) throws IOException {
         ANTLRInputStream input = new ANTLRInputStream(code);
         Java8Lexer lexer = new Java8Lexer(input);
@@ -27,10 +28,12 @@ public class Java8 implements Language {
         return profile;
     }
 
+    @Override
 	public final String[] grammarRules() {
         return Java8Parser.ruleNames;
     }
 
-    public String name() { return "java8"; }
+    @Override
+    public final String name() { return "java8"; }
 
 }
