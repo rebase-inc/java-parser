@@ -1,9 +1,7 @@
 package scan;
 
-import java.io.Reader;
 import java.util.HashMap;
 
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -12,7 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 
-final class TechProfile implements ParseTreeListener {
+public final class TechProfile implements ParseTreeListener {
 
     public HashMap<String, Integer> data = new HashMap<String, Integer>();
 
