@@ -8,6 +8,7 @@ import lang.java8.Java8;
 import lang.clojure.Clojure;
 import lang.c.C;
 import lang.cpp.CPP14;
+import lang.golang.Golang;
 
 
 public class Languages {
@@ -27,6 +28,9 @@ public class Languages {
 
         Language c = new C();
         languages_by_name.put(c.name(), c);
+
+        Language golang = new Golang();
+        languages_by_name.put(golang.name(), golang);
 
         languages = new ArrayList<>(languages_by_name.values());
     }

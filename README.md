@@ -6,6 +6,7 @@ Java
 C
 C++
 Clojure
+Go
 
 # Build the docker images
 ```shell
