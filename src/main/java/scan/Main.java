@@ -1,6 +1,6 @@
 package scan;
 
-import java.io.StringReader;
+import java.io.FileReader;
 import java.util.Map;
 
 import lang.Languages;
@@ -22,7 +22,7 @@ public final class Main {
                     return;
                 }
                 Language language = Languages.get(args[1]);
-                TechProfile profile = language.parse(new StringReader(args[2]));
+                TechProfile profile = language.parse(new FileReader(args[2]));
                 for (Map.Entry<String, Integer> entry : profile.data.entrySet()) {
                         System.out.println(entry.getKey()+" : "+entry.getValue());
                 }
