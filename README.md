@@ -38,3 +38,27 @@ ls -la src/main/java/lang/clojure/
 rm /src/main/java/lang/clojure/*.tokens
 
 ```
+
+## Add the new Lexer and Parser classes to the Parser java project
+If you used the commands in 'activate', the generated files should already be in the proper location
+to be integrated by the build.
+Now we need to write a small amount of code to finish the job.
+
+### Make an Language class
+Use an existing class that implements Language and copy it under your new 'lang/<new_lang>' sub-dir.
+Modify import statements relevant to your language.
+Modify other mentions of the previous language to your new one (class name, etc.)
+
+### Modify lang/Languages class
+Just add a new instance of your language into the static collection.
+For example:
+```java
+Language clojure = new Clojure();
+languages_by_name.put(clojure.name(), clojure);
+```
+
+### Build the project!
+```shell
+gradle build
+```
+

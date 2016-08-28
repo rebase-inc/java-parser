@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import lang.Language;
 import lang.java8.Java8;
+import lang.clojure.Clojure;
 import lang.cpp.CPP14;
 
 
@@ -16,8 +17,13 @@ public class Languages {
     static {
         Language java8 = new Java8();
         languages_by_name.put(java8.name(), java8);
+
+        Language clojure = new Clojure();
+        languages_by_name.put(clojure.name(), clojure);
+
         Language cpp14 = new CPP14();
         languages_by_name.put(cpp14.name(), cpp14);
+
         languages = new ArrayList<>(languages_by_name.values());
     }
 
