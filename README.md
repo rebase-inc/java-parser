@@ -45,9 +45,31 @@ to be integrated by the build.
 Now we need to write a small amount of code to finish the job.
 
 ### Make an Language class
+#### Copy & Paste from another language
 Use an existing class that implements Language and copy it under your new 'lang/<new_lang>' sub-dir.
 Modify import statements relevant to your language.
 Modify other mentions of the previous language to your new one (class name, etc.)
+
+#### Identify the root of the parse tree.
+Usually this means the top-most grammar rule that encapsulate all the other rules.
+In other words, a rule to define a 'file'.
+It doesn't have to be a file though, so every language differs a bit on that topic.
+In C++, it's known as the 'translation unit'. 
+In Java, it's known as the 'compilation unit'.
+In Clojure, it's known as a goddamn 'file' (because Clojure isn't so pretentious).
+
+There's a good reason why this is so, but for our problem, we only parse files
+coming from Git commit.
+
+1. Open in the *Parser.java file
+2. Search for 'ruleNames' array of Strings.
+3. Usually, the root rule is indeed the first rule (e.g. 'translationunit' in C++)
+4. Search for a method whose name is that rule
+5. Note the return type (TranslationunitContext)
+6. In the Language file (e.g. 'lang/cpp/CPP14.java'), modify the 'tree' declaration to work with the top rule:
+```java
+CPP14Parser.TranslationunitContext tree = parser.translationunit();
+```
 
 ### Modify lang/Languages class
 Just add a new instance of your language into the static collection.
