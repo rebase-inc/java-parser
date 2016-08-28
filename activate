@@ -7,6 +7,8 @@ ls-grammar () {
 build-docker () {
     docker build -t rebase/antlr4 docker/antlr4
     docker build -t rebase/gradle docker/gradle
+    docker build -t rebase/parser docker/parser
+    docker build -t rebase/parser-production -f parser-production-Dockerfile .
 }
 
 _sh-antlr4 () {
