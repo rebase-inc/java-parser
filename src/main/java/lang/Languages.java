@@ -9,6 +9,7 @@ import lang.clojure.Clojure;
 import lang.c.C;
 import lang.cpp.CPP14;
 import lang.golang.Golang;
+import lang.swift.Swift;
 
 
 public class Languages {
@@ -17,6 +18,14 @@ public class Languages {
     public static ArrayList<Language> languages;
 
     static {
+        // all this logic should be compressed once I figure out Java meta programming.
+        //
+        // languages_ = { Java8, Clojure, CPP14, C, Golang, Swift };
+        // for ( int i=0; i < languages_.length; i++ ) {
+        //      language = new languages_[i]();
+        //      languages_by_name.put(language.name(), language);
+        // }
+
         Language java8 = new Java8();
         languages_by_name.put(java8.name(), java8);
 
@@ -31,6 +40,9 @@ public class Languages {
 
         Language golang = new Golang();
         languages_by_name.put(golang.name(), golang);
+
+        Language swift = new Swift();
+        languages_by_name.put(swift.name(), swift);
 
         languages = new ArrayList<>(languages_by_name.values());
     }
