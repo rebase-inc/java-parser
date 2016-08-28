@@ -22,7 +22,7 @@ public final class TechProfile implements ParseTreeListener {
 
 	@Override public void enterEveryRule(ParserRuleContext ctx) {
         String rule = _parser.getRuleNames()[ctx.getRuleIndex()];
-        data.merge(rule, 1, (old, new_) -> old++ );
+        data.merge(rule, 1, (old, new_) -> ++old );
     }
 
 	@Override public void exitEveryRule(ParserRuleContext ctx)  { }
