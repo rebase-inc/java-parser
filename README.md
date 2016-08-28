@@ -2,9 +2,10 @@
 Throw code at it, in virtually any language, get a dictionary of technologies used.
 
 # List of supported languages
-Thus far:
 Java
+C
 C++
+Clojure
 
 # Build the docker images
 ```shell
@@ -58,8 +59,15 @@ In C++, it's known as the 'translation unit'.
 In Java, it's known as the 'compilation unit'.
 In Clojure, it's known as a goddamn 'file' (because Clojure isn't so pretentious).
 
-There's a good reason why this is so, but for our problem, we only parse files
-coming from Git commit.
+The problem becomes more complex with languages with preprocessors such as C/C++.
+We should not treat a .c file as if it is a translation unit, because that supposes
+it has been preprocessed.
+
+But we can't simply preprocess the files ourselves, unless
+we have high-level knowledge about the layout of the files, in particular header files
+and libraries.
+
+We only parse files coming from Git commit.
 
 1. Open in the *Parser.java file
 2. Search for 'ruleNames' array of Strings.
