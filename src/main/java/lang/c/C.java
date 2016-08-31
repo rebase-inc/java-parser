@@ -2,6 +2,7 @@ package lang.c;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,24 +18,32 @@ import scan.TechProfile;
 public class C implements Language {
 
     @Override
-    public TechProfile parse(Reader code) throws IOException {
-        ANTLRInputStream input = new ANTLRInputStream(code);
-        CLexer lexer = new CLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        CParser parser = new CParser(tokens);
-		CParser.TranslationUnitContext tree = parser.translationUnit();
-        TechProfile profile = new TechProfile(parser);
-        ParseTreeWalker.DEFAULT.walk(profile, tree);
-        return profile;
-    }
+        public TechProfile grammar_use(Reader code) throws IOException {
+            ANTLRInputStream input = new ANTLRInputStream(code);
+            CLexer lexer = new CLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            CParser parser = new CParser(tokens);
+            CParser.TranslationUnitContext tree = parser.translationUnit();
+            TechProfile profile = new TechProfile(parser);
+            ParseTreeWalker.DEFAULT.walk(profile, tree);
+            return profile;
+        }
 
     @Override
-	public final String[] grammarRules() {
-        return CParser.ruleNames;
-    }
+        public final String[] grammarRules() {
+            return CParser.ruleNames;
+        }
 
     @Override
-    public final String name() { return "c"; }
+        public final String name() { return "c"; }
+
+
+    @Override
+        public HashMap<String, String[]> extract_library_bindings(Reader code, String filename) throws IOException {
+            HashMap<String, String[]> bindings = new HashMap<String, String[]>();
+            return bindings;
+        }
+
 
 }
 

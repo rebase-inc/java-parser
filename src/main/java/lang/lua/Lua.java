@@ -2,6 +2,7 @@ package lang.lua;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -18,7 +19,7 @@ import scan.TechProfile;
 public class Lua implements Language {
 
     @Override
-    public TechProfile parse(Reader code) throws IOException {
+    public TechProfile grammar_use(Reader code) throws IOException {
         ANTLRInputStream input = new ANTLRInputStream(code);
         LuaLexer lexer = new LuaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -36,6 +37,12 @@ public class Lua implements Language {
 
     @Override
     public final String name() { return "lua"; }
+
+    @Override
+    public HashMap<String, String[]> extract_library_bindings(Reader code, String filename) throws IOException {
+        HashMap<String, String[]> bindings = new HashMap<String, String[]>();
+        return bindings;
+    }
 
 }
 
