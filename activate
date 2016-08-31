@@ -55,6 +55,7 @@ make-jre-image () {
     strip-docker-image -i openjdk:8-jre -t rebase/jre  \
         -p openjdk-8-jre-headless:amd64  \
         -f /etc/passwd \
+        -f /usr/lib/jvm/ \
         -f '/lib/*/libnss*' \
         -f /bin/ls \
         -f /bin/cat \
