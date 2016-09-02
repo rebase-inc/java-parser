@@ -41,7 +41,7 @@ _sh-gradle () {
 }
 
 
-gradle () {
+_gradle () {
     docker exec -it gradle gradle $*
 }
 

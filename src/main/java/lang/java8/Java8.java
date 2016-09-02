@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
+
 import lang.Language;
 import scan.TechProfile;
 
@@ -13,6 +17,15 @@ public class Java8 implements Language {
     @Override
         public TechProfile grammar_use(Reader code) throws IOException {
             TechProfile profile = new TechProfile();
+            CompilationUnit cu;
+            try {
+                cu = JavaParser.parse(code);
+                System.out.println(cu.toString());
+            } catch (ParseException e) {
+                System.out.println("Cannot parse this code");
+            } finally {
+                code.close();
+            }
             return profile;
         }
 

@@ -17,6 +17,9 @@ public final class TechProfile {
     }
 
     public TechProfile() {
+        data = new int[1];
+        _ruleNames = new String[1];
+        _ruleNames[0] = "";
     }
 
     public String[] getRuleNames() { return _ruleNames; }
