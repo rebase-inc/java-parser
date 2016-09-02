@@ -26,6 +26,7 @@ public class Java8 implements Language {
             Java8Parser.CompilationUnitContext tree = parser.compilationUnit(); // parse a compilationUnit
             TechProfile profile = new TechProfile(parser);
             ParseTreeWalker.DEFAULT.walk(profile, tree);
+            System.out.printf("Nodes visited: %d", profile.nodes_visited);
             return profile;
         }
 

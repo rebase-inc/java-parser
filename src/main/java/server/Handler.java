@@ -63,8 +63,8 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             }
             System.out.println("Code: "+code_as_str.substring(0, end));
             TechProfile profile = language.grammar_use(code);
-            System.out.println(Arrays.toString(profile.data.entrySet().toArray()));
-            ctx.write(gson.toJson(profile.data));
+            System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
+            ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
             ctx.flush();
         } else if (methodNumber == 3) {

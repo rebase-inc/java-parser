@@ -26,7 +26,7 @@ public final class Main {
                     }
                     Language language = Languages.get(args[1]);
                     TechProfile profile = language.grammar_use(new FileReader(args[2]));
-                    for (Map.Entry<String, Integer> entry : profile.data.entrySet()) {
+                    for (Map.Entry<String, Integer> entry : profile.toMap().entrySet()) {
                         System.out.println(entry.getKey()+" : "+entry.getValue());
                     }
                 }
