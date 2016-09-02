@@ -13,6 +13,7 @@ import lang.clojure.ClojureLexer;
 import lang.clojure.ClojureParser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class Clojure implements Language {
@@ -24,9 +25,9 @@ public class Clojure implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ClojureParser parser = new ClojureParser(tokens);
         ClojureParser.FileContext tree = parser.file();
-        TechProfile profile = new TechProfile(parser);
-        ParseTreeWalker.DEFAULT.walk(profile, tree);
-        return profile;
+        TechListener listener = new TechListener(parser);
+        ParseTreeWalker.DEFAULT.walk(listener, tree);
+        return listener.profile;
     }
 
     @Override

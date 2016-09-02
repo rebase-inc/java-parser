@@ -13,6 +13,7 @@ import lang.golang.GolangLexer;
 import lang.golang.GolangParser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class Golang implements Language {
@@ -24,9 +25,9 @@ public class Golang implements Language {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             GolangParser parser = new GolangParser(tokens);
             GolangParser.SourceFileContext tree = parser.sourceFile();
-            TechProfile profile = new TechProfile(parser);
-            ParseTreeWalker.DEFAULT.walk(profile, tree);
-            return profile;
+            TechListener listener = new TechListener(parser);
+            ParseTreeWalker.DEFAULT.walk(listener, tree);
+            return listener.profile;
         }
 
     @Override

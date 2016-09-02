@@ -14,6 +14,7 @@ import lang.scala.ScalaLexer;
 import lang.scala.ScalaParser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class Scala implements Language {
@@ -25,9 +26,9 @@ public class Scala implements Language {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ScalaParser parser = new ScalaParser(tokens);
             ParserRuleContext tree = parser.compilationUnit();
-            TechProfile profile = new TechProfile(parser);
-            ParseTreeWalker.DEFAULT.walk(profile, tree);
-            return profile;
+            TechListener listener = new TechListener(parser);
+            ParseTreeWalker.DEFAULT.walk(listener, tree);
+            return listener.profile;
         }
 
     @Override
@@ -43,7 +44,6 @@ public class Scala implements Language {
             HashMap<String, String[]> bindings = new HashMap<String, String[]>();
             return bindings;
         }
-
 
 }
 

@@ -14,6 +14,7 @@ import lang.lua.LuaLexer;
 import lang.lua.LuaParser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class Lua implements Language {
@@ -25,9 +26,9 @@ public class Lua implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LuaParser parser = new LuaParser(tokens);
         ParserRuleContext tree = parser.chunk();
-        TechProfile profile = new TechProfile(parser);
-        ParseTreeWalker.DEFAULT.walk(profile, tree);
-        return profile;
+        TechListener listener = new TechListener(parser);
+        ParseTreeWalker.DEFAULT.walk(listener, tree);
+        return listener.profile;
     }
 
     @Override

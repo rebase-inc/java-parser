@@ -14,6 +14,7 @@ import lang.swift.SwiftLexer;
 import lang.swift.SwiftParser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class Swift implements Language {
@@ -25,9 +26,9 @@ public class Swift implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SwiftParser parser = new SwiftParser(tokens);
         ParserRuleContext tree = parser.top_level();
-        TechProfile profile = new TechProfile(parser);
-        ParseTreeWalker.DEFAULT.walk(profile, tree);
-        return profile;
+        TechListener listener = new TechListener(parser);
+        ParseTreeWalker.DEFAULT.walk(listener, tree);
+        return listener.profile;
     }
 
     @Override

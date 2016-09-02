@@ -13,6 +13,7 @@ import lang.cpp.CPP14Lexer;
 import lang.cpp.CPP14Parser;
 import lang.Language;
 import scan.TechProfile;
+import scan.TechListener;
 
 
 public class CPP14 implements Language {
@@ -24,9 +25,9 @@ public class CPP14 implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CPP14Parser parser = new CPP14Parser(tokens);
         CPP14Parser.TranslationunitContext tree = parser.translationunit();
-        TechProfile profile = new TechProfile(parser);
-        ParseTreeWalker.DEFAULT.walk(profile, tree);
-        return profile;
+        TechListener listener = new TechListener(parser);
+        ParseTreeWalker.DEFAULT.walk(listener, tree);
+        return listener.profile;
     }
 
     @Override
