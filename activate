@@ -68,7 +68,12 @@ make-jre-image () {
 }
 
 parser () {
-     java  -cp build/libs/parser-1.0-all.jar scan.Main $*
+    java \
+        -Xmn512m \
+        -Xms1g \
+        -Xmx1g \
+        -cp build/libs/parser-1.0-all.jar \
+        scan.Main $*
 }
 
 
