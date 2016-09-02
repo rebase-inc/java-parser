@@ -1,11 +1,23 @@
 package scan;
 
 import java.util.HashMap;
+import java.util.function.BiFunction;
+
+
+final class Increment implements BiFunction<Integer, Integer, Integer> {
+    public Integer apply(Integer old, Integer new_) {
+        return ++old;
+    }
+}
 
 
 public final class TechProfile {
 
     private String[] _ruleNames;
+
+    private Increment increment = new Increment();
+
+    private HashMap<String, Integer> _data = new HashMap<>();
 
     public int[] data;
 
@@ -31,12 +43,19 @@ public final class TechProfile {
         }
     }
 
+    public void inc(String rule) {
+        _data.merge(rule, 1, increment);
+    }
+
     public HashMap<String, Integer> toMap() {
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        for (int i=0; i<data.length; i++) {
-            map.put(_ruleNames[i], data[i]);
+        if (_data.isEmpty()) {
+            HashMap<String, Integer> map = new HashMap<String, Integer>();
+            for (int i=0; i<data.length; i++) {
+                map.put(_ruleNames[i], data[i]);
+            }
+            return map;
         }
-        return map;
+        return _data;
     }
 
 }
