@@ -25,7 +25,7 @@ public class CPP14 implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CPP14Parser parser = new CPP14Parser(tokens);
         CPP14Parser.TranslationunitContext tree = parser.translationunit();
-        TechListener listener = new TechListener(parser);
+        TechListener listener = new TechListener(this, parser);
         ParseTreeWalker.DEFAULT.walk(listener, tree);
         return listener.profile;
     }

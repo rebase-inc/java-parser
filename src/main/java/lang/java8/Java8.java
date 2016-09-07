@@ -71,7 +71,7 @@ public class Java8 implements Language {
 
     @Override
         public TechProfile grammarUse(Reader code) throws IOException {
-            TechProfile profile = new TechProfile(_rules);
+            TechProfile profile = new TechProfile(this);
             CompilationUnit cu;
             try {
                 cu = JavaParser.parse(code);

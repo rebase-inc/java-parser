@@ -26,7 +26,7 @@ public class Swift implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SwiftParser parser = new SwiftParser(tokens);
         ParserRuleContext tree = parser.top_level();
-        TechListener listener = new TechListener(parser);
+        TechListener listener = new TechListener(this, parser);
         ParseTreeWalker.DEFAULT.walk(listener, tree);
         return listener.profile;
     }

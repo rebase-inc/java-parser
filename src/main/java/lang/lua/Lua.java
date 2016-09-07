@@ -26,7 +26,7 @@ public class Lua implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LuaParser parser = new LuaParser(tokens);
         ParserRuleContext tree = parser.chunk();
-        TechListener listener = new TechListener(parser);
+        TechListener listener = new TechListener(this, parser);
         ParseTreeWalker.DEFAULT.walk(listener, tree);
         return listener.profile;
     }

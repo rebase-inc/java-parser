@@ -3,6 +3,8 @@ package scan;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
+import lang.Language;
+
 
 final class Increment implements BiFunction<Integer, Integer, Integer> {
     public Integer apply(Integer old, Integer new_) {
@@ -13,7 +15,7 @@ final class Increment implements BiFunction<Integer, Integer, Integer> {
 
 public final class TechProfile {
 
-    private String[] _ruleNames;
+    public Language language;
 
     private Increment increment = new Increment();
 
@@ -23,19 +25,12 @@ public final class TechProfile {
 
     public int nodes_visited = 0;
 
-    public TechProfile(String[] ruleNames) {
-        _ruleNames = ruleNames;
-        data = new int[_ruleNames.length];
+    public TechProfile(Language language) {
+        this.language = language;
+        data = new int[language.grammarRules().length];
     }
 
-    public TechProfile() {
-        // load dummy data
-        data = new int[1];
-        _ruleNames = new String[1];
-        _ruleNames[0] = "";
-    }
-
-    public String[] getRuleNames() { return _ruleNames; }
+    public String[] getRuleNames() { return language.grammarRules(); }
 
     public void merge(TechProfile in) {
         int[] indata = in.data;
@@ -51,8 +46,9 @@ public final class TechProfile {
     public HashMap<String, Integer> toMap() {
         if (_data.isEmpty()) {
             HashMap<String, Integer> map = new HashMap<String, Integer>();
+            String[] ruleNames = language.grammarRules();
             for (int i=0; i<data.length; i++) {
-                map.put(_ruleNames[i], data[i]);
+                map.put(ruleNames[i], data[i]);
             }
             return map;
         }

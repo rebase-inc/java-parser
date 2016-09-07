@@ -25,7 +25,7 @@ public class Clojure implements Language {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ClojureParser parser = new ClojureParser(tokens);
         ClojureParser.FileContext tree = parser.file();
-        TechListener listener = new TechListener(parser);
+        TechListener listener = new TechListener(this, parser);
         ParseTreeWalker.DEFAULT.walk(listener, tree);
         return listener.profile;
     }

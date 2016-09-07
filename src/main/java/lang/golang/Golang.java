@@ -25,7 +25,7 @@ public class Golang implements Language {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             GolangParser parser = new GolangParser(tokens);
             GolangParser.SourceFileContext tree = parser.sourceFile();
-            TechListener listener = new TechListener(parser);
+            TechListener listener = new TechListener(this, parser);
             ParseTreeWalker.DEFAULT.walk(listener, tree);
             return listener.profile;
         }

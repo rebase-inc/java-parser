@@ -25,7 +25,7 @@ public class C implements Language {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CParser parser = new CParser(tokens);
             CParser.TranslationUnitContext tree = parser.translationUnit();
-            TechListener listener = new TechListener(parser);
+            TechListener listener = new TechListener(this, parser);
             ParseTreeWalker.DEFAULT.walk(listener, tree);
             return listener.profile;
         }

@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import lang.Language;
 import scan.TechProfile;
 
 
@@ -16,8 +17,8 @@ public final class TechListener implements ParseTreeListener {
 
     private Parser _parser;
 
-    public TechListener(Parser parser) {
-        profile = new TechProfile(parser.getRuleNames());
+    public TechListener(Language language, Parser parser) {
+        profile = new TechProfile(language);
         _parser = parser;
     }
 

@@ -26,7 +26,7 @@ public class Scala implements Language {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ScalaParser parser = new ScalaParser(tokens);
             ParserRuleContext tree = parser.compilationUnit();
-            TechListener listener = new TechListener(parser);
+            TechListener listener = new TechListener(this, parser);
             ParseTreeWalker.DEFAULT.walk(listener, tree);
             return listener.profile;
         }
