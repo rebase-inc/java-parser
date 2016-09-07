@@ -15,9 +15,15 @@ final class Increment implements BiFunction<Integer, Integer, Integer> {
 
 public final class TechProfile {
 
-    public Language language;
+    public final Language language;
 
-    private Increment increment = new Increment();
+    private final Increment increment = new Increment();
+
+    private final String grammarRulePrefix;
+
+    private final String systemLibraryPrefix;
+
+    private final String thirdPartyLibraryPrefix;
 
     private HashMap<String, Integer> _data = new HashMap<>();
 
@@ -28,6 +34,9 @@ public final class TechProfile {
     public TechProfile(Language language) {
         this.language = language;
         data = new int[language.grammarRules().length];
+        grammarRulePrefix = language.name()+".__language__.";
+        systemLibraryPrefix = language.name()+".__system__.";
+        thirdPartyLibraryPrefix = language.name()+".__3rd_party__.";
     }
 
     public String[] getRuleNames() { return language.grammarRules(); }
@@ -39,8 +48,16 @@ public final class TechProfile {
         }
     }
 
-    public void inc(String rule) {
-        _data.merge(rule, 1, increment);
+    public void incrementGrammar(String rule) {
+        _data.merge(grammarRulePrefix+rule, 1, increment);
+    }
+
+    public void incrementSystem(String tech) {
+        _data.merge(systemLibraryPrefix+tech, 1, increment);
+    }
+
+    public void incrementThirdParty(String tech) {
+        _data.merge(grammarRulePrefix+tech, 1, increment);
     }
 
     public HashMap<String, Integer> toMap() {

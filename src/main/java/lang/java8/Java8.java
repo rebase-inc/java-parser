@@ -31,7 +31,7 @@ class VisitAll extends TreeVisitor {
 
     @Override
         public void process(Node node) {
-            _profile.inc("Java8.__language__."+node.getClass().getSimpleName());
+            _profile.incrementGrammar(node.getClass().getSimpleName());
             nodes.add(node);
         }
 
