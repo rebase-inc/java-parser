@@ -62,7 +62,7 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
                 end = code_as_str.length();
             }
             System.out.println("Code: "+code_as_str.substring(0, end));
-            TechProfile profile = language.grammar_use(code);
+            TechProfile profile = language.grammarUse(code);
             System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
             ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
@@ -83,7 +83,7 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             System.out.println("Code: "+code_as_str.substring(0, end));
             String filename = gson.fromJson(array.get(3), String.class);
             System.out.println("Filename: "+filename);
-            HashMap<String, String[]> library_bindings = language.extract_library_bindings(code, filename);
+            HashMap<String, String[]> library_bindings = language.extractLibraryBindings(code, filename);
             System.out.println(Arrays.toString(library_bindings.entrySet().toArray()));
             ctx.write(gson.toJson(library_bindings));
             ctx.write("\n");

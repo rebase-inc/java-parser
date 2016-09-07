@@ -2,9 +2,11 @@ package lang.java8;
 
 import java.io.IOException;
 import java.io.Reader;
+import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -21,13 +23,16 @@ class VisitAll extends TreeVisitor {
 
     private TechProfile _profile;
 
+    public HashSet<Node> nodes = new HashSet<>();
+
     public VisitAll(TechProfile profile) {
         _profile = profile;
     }
 
     @Override
         public void process(Node node) {
-            _profile.inc(node.getClass().getSimpleName());
+            _profile.inc("Java8.__language__."+node.getClass().getSimpleName());
+            nodes.add(node);
         }
 
 }
@@ -39,6 +44,10 @@ public class Java8 implements Language {
     private static ArrayList<Class<?>> _nodeTypes = new ArrayList<>();
 
     static {
+        // As a one-time operation, detect all the grammar rules
+        // by scanning the Node subtypes in the 'com.github.javaparser.ast' package
+        // Then store all the rules in the private variable '_rules'.
+        //
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
@@ -56,19 +65,28 @@ public class Java8 implements Language {
             }
             Arrays.sort(_rules);
         } catch (IOException e) {
-            System.out.println(e.toString());
+            out.println(e.toString());
         }
     }
 
     @Override
-        public TechProfile grammar_use(Reader code) throws IOException {
+        public TechProfile grammarUse(Reader code) throws IOException {
             TechProfile profile = new TechProfile(_rules);
             CompilationUnit cu;
             try {
                 cu = JavaParser.parse(code);
-                new VisitAll(profile).visitDepthFirst(cu);
+                VisitAll visitor = new VisitAll(profile);
+                visitor.visitDepthFirst(cu);
+                visitor.nodes.forEach((node)-> {
+                    out.println("++++++++++++++");
+                    out.println(node.getParentNode());
+                    out.println(node.getClass().getSimpleName());
+                    out.println(node);
+                    out.println("--------------");
+                });
+
             } catch (ParseException e) {
-                System.out.println("Cannot parse this code");
+                out.println("Cannot parse this code");
             } finally {
                 code.close();
             }
@@ -82,7 +100,7 @@ public class Java8 implements Language {
         public final String name() { return "java8"; }
 
     @Override
-        public HashMap<String, String[]> extract_library_bindings(Reader code, String filename) throws IOException {
+        public HashMap<String, String[]> extractLibraryBindings(Reader code, String filename) throws IOException {
             HashMap<String, String[]> bindings = new HashMap<String, String[]>();
             return bindings;
         }

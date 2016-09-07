@@ -29,6 +29,7 @@ public final class TechProfile {
     }
 
     public TechProfile() {
+        // load dummy data
         data = new int[1];
         _ruleNames = new String[1];
         _ruleNames[0] = "";

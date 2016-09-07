@@ -20,7 +20,7 @@ import scan.TechListener;
 public class Scala implements Language {
 
     @Override
-        public TechProfile grammar_use(Reader code) throws IOException {
+        public TechProfile grammarUse(Reader code) throws IOException {
             ANTLRInputStream input = new ANTLRInputStream(code);
             ScalaLexer lexer = new ScalaLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -40,7 +40,7 @@ public class Scala implements Language {
         public final String name() { return "scala"; }
 
     @Override
-        public HashMap<String, String[]> extract_library_bindings(Reader code, String filename) throws IOException {
+        public HashMap<String, String[]> extractLibraryBindings(Reader code, String filename) throws IOException {
             HashMap<String, String[]> bindings = new HashMap<String, String[]>();
             return bindings;
         }

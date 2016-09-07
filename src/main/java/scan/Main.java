@@ -25,7 +25,7 @@ public final class Main {
                         return;
                     }
                     Language language = Languages.get(args[1]);
-                    TechProfile profile = language.grammar_use(new FileReader(args[2]));
+                    TechProfile profile = language.grammarUse(new FileReader(args[2]));
                     for (Map.Entry<String, Integer> entry : profile.toMap().entrySet()) {
                         System.out.println(entry.getKey()+" : "+entry.getValue());
                     }
@@ -56,7 +56,7 @@ public final class Main {
                         return;
                     }
                     Language language = Languages.get(args[1]);
-                    HashMap<String, String[]> bindings = language.extract_library_bindings(new FileReader(args[2]), args[3]);
+                    HashMap<String, String[]> bindings = language.extractLibraryBindings(new FileReader(args[2]), args[3]);
                     System.out.println(Arrays.toString(bindings.entrySet().toArray()));
                 }
                 break;
