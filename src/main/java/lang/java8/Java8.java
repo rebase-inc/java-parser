@@ -11,7 +11,10 @@ import java.util.HashSet;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.QualifiedNameExpr;
 import com.github.javaparser.ast.visitor.TreeVisitor;
 import com.google.common.reflect.ClassPath;
 
@@ -25,14 +28,44 @@ class VisitAll extends TreeVisitor {
 
     public HashSet<Node> nodes = new HashSet<>();
 
+    public HashMap<String, String> namedType = new HashMap<>();
+
     public VisitAll(TechProfile profile) {
         _profile = profile;
+    }
+
+    private String Add(String full, String name) {
+        if (full.isEmpty()) {
+            return name;
+        } else {
+            return name+"."+full;
+        }
+    }
+
+    private String fullyQualifiedName(NameExpr name) {
+        String full = new String();
+        NameExpr _name = name;
+        do {
+            full = Add(full, _name.getName());
+            if (_name instanceof QualifiedNameExpr) {
+                QualifiedNameExpr qualName = (QualifiedNameExpr)_name;
+                _name = qualName.getQualifier();
+            } else {
+                break;
+            }
+        } while (true);
+        return full;
     }
 
     @Override
         public void process(Node node) {
             _profile.incrementGrammar(node.getClass().getSimpleName());
             nodes.add(node);
+            if (node instanceof ImportDeclaration) {
+                ImportDeclaration imp = (ImportDeclaration)node;
+                NameExpr name = imp.getName();
+                namedType.put(name.getName(), fullyQualifiedName(name));
+            }
         }
 
 }
@@ -84,6 +117,7 @@ public class Java8 implements Language {
                     out.println(node);
                     out.println("--------------");
                 });
+                visitor.namedType.forEach((name, qual)-> out.printf("%s: %s\n", qual, name));
 
             } catch (ParseException e) {
                 out.println("Cannot parse this code");
