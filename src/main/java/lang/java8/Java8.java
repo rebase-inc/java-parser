@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -56,7 +55,15 @@ class VisitAll extends TreeVisitor {
 
     public HashSet<Node> nodes = new HashSet<>();
 
-    public HashMap<String, String> namedType = new HashMap<>();
+    //
+    // Map NamedExpr names to Fully Qualified Names
+    // Example: 
+    // {
+    //      "String":       "java.lang.String",
+    //      "TypeToken":    "com.google.gson.reflect.TypeToken"
+    // }
+    //
+    public HashMap<String, String> namedExprToFQN = new HashMap<>();
 
     public VisitAll(TechProfile profile) {
         _profile = profile;
@@ -92,23 +99,9 @@ class VisitAll extends TreeVisitor {
             if (node instanceof ImportDeclaration) {
                 ImportDeclaration imp = (ImportDeclaration)node;
                 NameExpr name = imp.getName();
-                namedType.put(name.getName(), fullyQualifiedName(name));
+                namedExprToFQN.put(name.getName(), fullyQualifiedName(name));
             } else if (node instanceof ImportDeclaration) {
             }
-        }
-
-}
-
-
-final class NotFromJavaLang implements Predicate<Class<? extends Object>> {
-
-    @Override
-        public boolean test(Class<? extends Object> clazz) {
-            String name = clazz.getName();
-            if (name.startsWith("java.lang.")) {
-                return name.substring(10).indexOf('.') != -1;
-            }
-            return true;
         }
 
 }
@@ -163,7 +156,7 @@ public class Java8 implements Language {
                     out.println(node);
                     out.println("--------------");
                 });
-                visitor.namedType.forEach((name, qual)-> out.printf("%s: %s\n", qual, name));
+                visitor.namedExprToFQN.forEach((name, qual)-> out.printf("%s: %s\n", qual, name));
 
             } catch (ParseException e) {
                 out.println("Cannot parse this code");
@@ -191,8 +184,8 @@ public class Java8 implements Language {
                 new SubTypesScanner(false)
                 );
         Set<Class<? extends Object>> allClasses = reflections.getSubTypesOf(Object.class);
-        out.println("---------------------");
         allClasses.removeIf(notFromJavaLang);
+        out.println("---------------------");
         allClasses.forEach((type)->out.println(type));
         out.println("---------------------");
         Gson gson = new Gson();
