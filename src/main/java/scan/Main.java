@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import lang.Languages;
 import lang.Language;
-import lang.java8.Java8;
+import lang.java8.JavaLangTypes;
 import scan.TechProfile;
 
 
@@ -65,8 +65,7 @@ public final class Main {
 
             case "save-java-lang":
                 {
-                    Java8 java8 = (Java8) Languages.get("java8");
-                    java8.saveJavaLang();
+                    JavaLangTypes.saveJavaLang();
                 }
                 break;
         }
