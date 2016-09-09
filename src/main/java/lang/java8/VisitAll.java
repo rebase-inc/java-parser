@@ -1,12 +1,16 @@
 package lang.java8;
 
+import static java.lang.System.out;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.QualifiedNameExpr;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.visitor.TreeVisitor;
 
 import scan.TechProfile;
@@ -29,7 +33,7 @@ class VisitAll extends TreeVisitor {
      * Stage 5: do it fast.
      */
 
-    private TechProfile _profile;
+    private TechProfile profile;
 
     public HashSet<Node> nodes = new HashSet<>();
 
@@ -43,8 +47,15 @@ class VisitAll extends TreeVisitor {
     //
     public HashMap<String, String> typeNameExprToFQN = new HashMap<>(JavaLang.types);
 
+    //
+    // Map Variable Declarator Id  (a.k.a. bindings) to Type NamedExpr name.
+    // Example:
+    // "private Bar foo;" => { "foo": "Bar" }
+    //
+    public HashMap<String, String> bindings = new HashMap<>();
+
     public VisitAll(TechProfile profile) {
-        _profile = profile;
+        this.profile = profile;
     }
 
     private static String Add(String full, String name) {
@@ -76,13 +87,29 @@ class VisitAll extends TreeVisitor {
 
     @Override
         public void process(Node node) {
-            _profile.incrementGrammar(node.getClass().getSimpleName());
+            profile.incrementGrammar(node.getClass().getSimpleName());
             nodes.add(node);
             if (node instanceof ImportDeclaration) {
+                //
+                // Stage 1: gather all references to types (pre-loaded, standard lib, third-party).
+                //
                 ImportDeclaration imp = (ImportDeclaration)node;
                 NameExpr name = imp.getName();
                 typeNameExprToFQN.put(name.getName(), fullyQualifiedName(name));
-            } else if (node instanceof ImportDeclaration) {
+            } else if (node instanceof FieldDeclaration) {
+                FieldDeclaration field = (FieldDeclaration)node;
+                String typeName = field.getType().toString();
+                if (typeNameExprToFQN.containsKey(typeName)) {
+                    field.getVariables().forEach( variable -> {
+                        String fqnType = typeNameExprToFQN.get(typeName);
+                        bindings.put(variable.getId().getName(), fqnType);
+                        if (fqnType.startsWith("java")) {
+                            this.profile.incrementSystem(fqnType);
+                        } else {
+                            this.profile.incrementThirdParty(fqnType);
+                        }
+                    });
+                }
             }
         }
 
