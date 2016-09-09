@@ -51,7 +51,19 @@ public class JavaLang {
         HashMap<String, String> javaLang = new HashMap<>();
         allClasses.forEach(type -> {
             if (!type.getSimpleName().isEmpty()) {
+                // we need to map local name to FQN
+                // but we also need to map FQN to FQN
+                // so we can detect var/field declaration that use the FQN.
+                // Example:
+                //
+                // String foo = "bar";
+                //
+                // versus:
+                //
+                // java.lang.String foo = "bar";
+                //
                 javaLang.put(type.getSimpleName(), type.getName());
+                javaLang.put(type.getName(), type.getName());
             }
         });
         FileWriter file = new FileWriter("src/main/resources/java8/java-lang.json");

@@ -9,8 +9,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.QualifiedNameExpr;
-import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.TreeVisitor;
 
 import scan.TechProfile;
@@ -95,15 +94,35 @@ class VisitAll extends TreeVisitor {
                 //
                 ImportDeclaration imp = (ImportDeclaration)node;
                 NameExpr name = imp.getName();
-                typeNameExprToFQN.put(name.getName(), fullyQualifiedName(name));
+                String fqn = fullyQualifiedName(name);
+                typeNameExprToFQN.put(name.getName(), fqn);
+                // we need to map the fqn:fqn because it is legal java to declare a var/field with an FQN
+                // example: java.lang.String foo = "baba";
+                typeNameExprToFQN.put(fqn, fqn);
+
             } else if (node instanceof FieldDeclaration) {
                 FieldDeclaration field = (FieldDeclaration)node;
                 String typeName = field.getType().toString();
                 if (typeNameExprToFQN.containsKey(typeName)) {
+                    String fqnType = typeNameExprToFQN.get(typeName);
                     field.getVariables().forEach( variable -> {
-                        String fqnType = typeNameExprToFQN.get(typeName);
                         bindings.put(variable.getId().getName(), fqnType);
                         if (fqnType.startsWith("java")) {
+                            this.profile.incrementSystem(fqnType);
+                        } else {
+                            this.profile.incrementThirdParty(fqnType);
+                        }
+                    });
+                }
+
+            } else if (node instanceof VariableDeclarationExpr) {
+                VariableDeclarationExpr var = (VariableDeclarationExpr)node;
+                String typeName = var.getType().toString();
+                if (typeNameExprToFQN.containsKey(typeName)) {
+                    String fqnType = typeNameExprToFQN.get(typeName);
+                    var.getVars().forEach( variable -> {
+                        bindings.put(variable.getId().getName(), fqnType);
+                        if (fqnType.startsWith("java.")) {
                             this.profile.incrementSystem(fqnType);
                         } else {
                             this.profile.incrementThirdParty(fqnType);
