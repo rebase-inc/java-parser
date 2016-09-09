@@ -1,12 +1,15 @@
 package lang.java8;
 
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.QualifiedNameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -34,7 +37,7 @@ class VisitAll extends TreeVisitor {
 
     private TechProfile profile;
 
-    public HashSet<Node> nodes = new HashSet<>();
+    //public HashSet<Node> nodes = new HashSet<>();
 
     //
     // Map NamedExpr names to Fully Qualified Names
@@ -84,10 +87,18 @@ class VisitAll extends TreeVisitor {
         return full;
     }
 
+    private void increment(String tech) {
+        if (tech.startsWith("java.")) {
+            profile.incrementSystem(tech);
+        } else {
+            profile.incrementThirdParty(tech);
+        }
+    }
+
     @Override
         public void process(Node node) {
             profile.incrementGrammar(node.getClass().getSimpleName());
-            nodes.add(node);
+            //nodes.add(node);
             if (node instanceof ImportDeclaration) {
                 //
                 // Stage 1: gather all references to types (pre-loaded, standard lib, third-party).
@@ -107,9 +118,7 @@ class VisitAll extends TreeVisitor {
                     String fqnType = typeNameExprToFQN.get(typeName);
                     field.getVariables().forEach( variable -> {
                         bindings.put(variable.getId().getName(), fqnType);
-                        if (fqnType.startsWith("java")) {
-                            this.profile.incrementSystem(fqnType);
-                        } else {
+                        if (fqnType.startsWith("java")) { this.profile.incrementSystem(fqnType); } else {
                             this.profile.incrementThirdParty(fqnType);
                         }
                     });
@@ -122,12 +131,30 @@ class VisitAll extends TreeVisitor {
                     String fqnType = typeNameExprToFQN.get(typeName);
                     var.getVars().forEach( variable -> {
                         bindings.put(variable.getId().getName(), fqnType);
-                        if (fqnType.startsWith("java.")) {
-                            this.profile.incrementSystem(fqnType);
-                        } else {
-                            this.profile.incrementThirdParty(fqnType);
-                        }
+                        increment(fqnType);
                     });
+                }
+
+            } else if (node instanceof MethodCallExpr) {
+                MethodCallExpr call = (MethodCallExpr)node;
+                if (call.getScope() != null) {
+                    String scope = call.getScope().toString();
+                    if (scope.indexOf('(') == -1) {
+                        int firstDot = scope.indexOf('.');
+                        String binding, scope_remainder;
+                        if (firstDot == -1) {
+                            binding = scope;
+                            scope_remainder = ".";
+                        } else {
+                            binding = scope.substring(0, firstDot);
+                            scope_remainder = scope.substring(firstDot)+".";
+                        }
+                        if (bindings.containsKey(binding)) {
+                            increment(bindings.get(binding)+scope_remainder+call.getName());
+                        } else if (typeNameExprToFQN.containsKey(binding)) {
+                            increment(typeNameExprToFQN.get(binding)+scope_remainder+call.getName());
+                        }
+                    }
                 }
             }
         }

@@ -57,7 +57,7 @@ public final class TechProfile {
     }
 
     public void incrementThirdParty(String tech) {
-        _data.merge(grammarRulePrefix+tech, 1, increment);
+        _data.merge(thirdPartyLibraryPrefix+tech, 1, increment);
     }
 
     public HashMap<String, Integer> toMap() {

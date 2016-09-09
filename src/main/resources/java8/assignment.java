@@ -10,5 +10,7 @@ class Foo {
 
     public Foo() {
         _bar.fud();
+        _bar.moo.what();
+        _bar.zzz(0).wtf(1);
     }
 }

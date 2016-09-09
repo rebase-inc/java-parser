@@ -24,13 +24,13 @@ public class Java8 implements Language {
                 cu = JavaParser.parse(code);
                 VisitAll visitor = new VisitAll(profile);
                 visitor.visitDepthFirst(cu);
-                visitor.nodes.forEach((node)-> {
-                    out.println("++++++++++++++");
-                    out.println(node.getParentNode());
-                    out.println(node.getClass().getSimpleName());
-                    out.println(node);
-                    out.println("--------------");
-                });
+                //visitor.nodes.forEach((node)-> {
+                    //out.println("++++++++++++++");
+                    //out.println(node.getParentNode());
+                    //out.println(node.getClass().getSimpleName());
+                    //out.println(node);
+                    //out.println("--------------");
+                //});
                 //visitor.typeNameExprToFQN.forEach((name, qual)-> out.printf("%s: %s\n", name, qual));
 
             } catch (ParseException e) {
