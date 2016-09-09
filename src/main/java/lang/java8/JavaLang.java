@@ -17,9 +17,9 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.scanners.SubTypesScanner;
 
 
-public class JavaLangTypes {
+public class JavaLang {
 
-    public static HashMap<String, String> javaLangTypes;
+    public static HashMap<String, String> types;
 
     private static final NotFromJavaLang notFromJavaLang = new NotFromJavaLang();
 
@@ -31,13 +31,13 @@ public class JavaLangTypes {
                     );
             Gson gson = new Gson();
             Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            javaLangTypes = gson.fromJson(javaLang_as_JSON, type);
+            types = gson.fromJson(javaLang_as_JSON, type);
         } catch (IOException e) {
             out.println(e.toString());
         }
     }
 
-    public static void saveJavaLang() throws Exception {
+    public static void save() throws Exception {
         Reflections reflections = new Reflections(
                 ClasspathHelper.forClass(Object.class), 
                 new SubTypesScanner(false)
@@ -49,7 +49,11 @@ public class JavaLangTypes {
         out.println("---------------------");
         Gson gson = new Gson();
         HashMap<String, String> javaLang = new HashMap<>();
-        allClasses.forEach(type -> javaLang.put(type.getSimpleName(), type.getName()));
+        allClasses.forEach(type -> {
+            if (!type.getSimpleName().isEmpty()) {
+                javaLang.put(type.getSimpleName(), type.getName());
+            }
+        });
         FileWriter file = new FileWriter("src/main/resources/java8/java-lang.json");
         file.write(gson.toJson(javaLang));
         file.flush();

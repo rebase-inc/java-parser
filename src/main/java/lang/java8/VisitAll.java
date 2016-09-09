@@ -19,12 +19,14 @@ class VisitAll extends TreeVisitor {
      * The grammar usage is easy, just pile up AST node references.
      *
      * The library usage is more difficult.
-     * Because we are dealing with a typed language, we have to:
-     * 1/ gather all references to types (pre-loaded, standard lib, third-party, private).
-     * 2/ gather all bindings that reference any type in 1/ (fields, local vars, 'lvalue references', 'rvalue references', etc.)
-     * 3/ scan the AST and count these binding references (NameExpr subtypes in the AST)
-     * 4/ do 1-3 for 'before' and 'after', and take the absolute value of the diff of counts per library item
-     * 5/ do it fast.
+     *
+     * Because we are dealing with a typed language, we have to do it in multiple stages:
+     *
+     * Stage 1: gather all references to types (pre-loaded, standard lib, third-party). (We ignore types declared as part of the project).
+     * Stage 2: gather all bindings that reference any type in 1/ (fields, local vars, 'lvalue references', 'rvalue references', etc.)
+     * Stage 3: scan the AST and count these binding references (NameExpr subtypes in the AST)
+     * Stage 4: do 1-3 for 'before' and 'after', and take the absolute value of the diff of counts per library item
+     * Stage 5: do it fast.
      */
 
     private TechProfile _profile;
@@ -39,13 +41,13 @@ class VisitAll extends TreeVisitor {
     //      "TypeToken":    "com.google.gson.reflect.TypeToken"
     // }
     //
-    public HashMap<String, String> namedExprToFQN = new HashMap<>();
+    public HashMap<String, String> typeNameExprToFQN = new HashMap<>(JavaLang.types);
 
     public VisitAll(TechProfile profile) {
         _profile = profile;
     }
 
-    private String Add(String full, String name) {
+    private static String Add(String full, String name) {
         if (full.isEmpty()) {
             return name;
         } else {
@@ -79,7 +81,7 @@ class VisitAll extends TreeVisitor {
             if (node instanceof ImportDeclaration) {
                 ImportDeclaration imp = (ImportDeclaration)node;
                 NameExpr name = imp.getName();
-                namedExprToFQN.put(name.getName(), fullyQualifiedName(name));
+                typeNameExprToFQN.put(name.getName(), fullyQualifiedName(name));
             } else if (node instanceof ImportDeclaration) {
             }
         }

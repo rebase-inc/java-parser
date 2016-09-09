@@ -31,7 +31,7 @@ public class Java8 implements Language {
                     out.println(node);
                     out.println("--------------");
                 });
-                visitor.namedExprToFQN.forEach((name, qual)-> out.printf("%s: %s\n", qual, name));
+                visitor.typeNameExprToFQN.forEach((name, qual)-> out.printf("%s: %s\n", name, qual));
 
             } catch (ParseException e) {
                 out.println("Cannot parse this code");
