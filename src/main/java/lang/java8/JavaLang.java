@@ -1,7 +1,9 @@
 package lang.java8;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import static java.lang.System.out;
@@ -22,19 +24,18 @@ public class JavaLang {
     public static HashMap<String, String> types;
 
     private static final NotFromJavaLang notFromJavaLang = new NotFromJavaLang();
+    private static final String javaLangResource = "lang/java8/java-lang.json";
 
     static {
-        try {
-            String javaLang_as_JSON = FileUtils.readFileToString(
-                    new File("src/main/resources/java8/java-lang.json"),
-                    Charset.defaultCharset()
-                    );
-            Gson gson = new Gson();
-            Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            types = gson.fromJson(javaLang_as_JSON, type);
-        } catch (IOException e) {
-            out.println(e.toString());
+        InputStream in = JavaLang.class.getClassLoader().getResourceAsStream(javaLangResource); 
+        if (in == null) {
+            String msg = "Resource does not exist: "+javaLangResource;
+            out.println(msg);
         }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        Gson gson = new Gson();
+        Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        types = gson.fromJson(reader, type);
     }
 
     public static void save() throws Exception {
@@ -66,7 +67,7 @@ public class JavaLang {
                 javaLang.put(type.getName(), type.getName());
             }
         });
-        FileWriter file = new FileWriter("src/main/resources/java8/java-lang.json");
+        FileWriter file = new FileWriter("src/main/resources/lang/java8/java-lang.json");
         file.write(gson.toJson(javaLang));
         file.flush();
         file.close();
