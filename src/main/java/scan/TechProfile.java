@@ -94,7 +94,7 @@ public final class TechProfile {
             } else if (in_a) {
                 delta.put(key, a_data.get(key));
             } else if (in_b) {
-                delta.put(key, a_data.get(key));
+                delta.put(key, b_data.get(key));
             }
         });
         return delta;
