@@ -1,6 +1,8 @@
 package scan;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import lang.Language;
@@ -48,6 +50,10 @@ public final class TechProfile {
         }
     }
 
+    public void put(String key, Integer count) {
+        _data.put(key, count);
+    }
+
     public void incrementGrammar(String rule) {
         _data.merge(grammarRulePrefix+rule, 1, increment);
     }
@@ -70,6 +76,28 @@ public final class TechProfile {
             return map;
         }
         return _data;
+    }
+
+    public static TechProfile abs_diff(TechProfile a, TechProfile b) throws Exception {
+        if (a.language != b.language) {
+            throw new Exception("Cannot compare two different languages");
+        }
+        TechProfile delta = new TechProfile(a.language);
+        HashMap<String, Integer> a_data = a.toMap();
+        HashMap<String, Integer> b_data = b.toMap();
+        Set<String> all_keys = new HashSet<String>(a_data.keySet());
+        all_keys.addAll(b_data.keySet());
+        all_keys.forEach( key -> {
+            boolean in_a = a_data.containsKey(key), in_b = b_data.containsKey(key);
+            if ( in_a && in_b ) {
+                delta.put(key, Math.abs(a_data.get(key) - b_data.get(key)));
+            } else if (in_a) {
+                delta.put(key, a_data.get(key));
+            } else if (in_b) {
+                delta.put(key, a_data.get(key));
+            }
+        });
+        return delta;
     }
 
 }

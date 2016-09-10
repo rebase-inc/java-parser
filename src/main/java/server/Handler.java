@@ -50,44 +50,37 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             ctx.flush();
         } else if (methodNumber == 2) {
             //
-            // grammar_use
+            // scan_content
             //
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
-            System.out.println("Language: "+language.name());
             String code_as_str = gson.fromJson(array.get(2), String.class);
             StringReader code = new StringReader(code_as_str);
             int end = 80;
             if (code_as_str.length() < end) {
                 end = code_as_str.length();
             }
-            System.out.println("Code: "+code_as_str.substring(0, end));
-            TechProfile profile = language.grammarUse(code);
+            TechProfile profile = language.scan_contents(code);
             System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
             ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
             ctx.flush();
         } else if (methodNumber == 3) {
             //
-            // extract_library_bindings
+            // scan_patch
             //
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
             System.out.println("Language: "+language.name());
-            String code_as_str = gson.fromJson(array.get(2), String.class);
-            StringReader code = new StringReader(code_as_str);
-            int end = 80;
-            if (code_as_str.length() < end) {
-                end = code_as_str.length();
-            }
-            System.out.println("Code: "+code_as_str.substring(0, end));
-            String filename = gson.fromJson(array.get(3), String.class);
-            System.out.println("Filename: "+filename);
-            HashMap<String, String[]> library_bindings = language.extractLibraryBindings(code, filename);
-            System.out.println(Arrays.toString(library_bindings.entrySet().toArray()));
-            ctx.write(gson.toJson(library_bindings));
+            String code = gson.fromJson(array.get(2), String.class);
+            String previous_code = gson.fromJson(array.get(3), String.class);
+            String patch = gson.fromJson(array.get(4), String.class);
+            TechProfile profile = language.scan_patch(code, previous_code, patch);
+            System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
+            ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
             ctx.flush();
+
         } else {
             System.out.println("Invalid method number. Should throw an exception");
         }

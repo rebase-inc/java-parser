@@ -19,7 +19,7 @@ import scan.TechListener;
 public class C implements Language {
 
     @Override
-        public TechProfile grammarUse(Reader code) throws IOException {
+        public TechProfile scan_contents(Reader code) throws IOException {
             ANTLRInputStream input = new ANTLRInputStream(code);
             CLexer lexer = new CLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -37,12 +37,6 @@ public class C implements Language {
 
     @Override
         public final String name() { return "c"; }
-
-    @Override
-        public HashMap<String, String[]> extractLibraryBindings(Reader code, String filename) throws IOException {
-            HashMap<String, String[]> bindings = new HashMap<String, String[]>();
-            return bindings;
-        }
 
 }
 

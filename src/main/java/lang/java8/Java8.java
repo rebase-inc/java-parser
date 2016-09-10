@@ -15,9 +15,14 @@ import scan.TechProfile;
 
 public class Java8 implements Language {
 
+    @Override
+        public final String[] grammarRules() { return Grammar.rules; }
 
     @Override
-        public TechProfile grammarUse(Reader code) throws IOException {
+        public final String name() { return "java8"; }
+
+    @Override
+        public TechProfile scan_contents(Reader code) throws IOException {
             TechProfile profile = new TechProfile(this);
             CompilationUnit cu;
             try {
@@ -36,21 +41,13 @@ public class Java8 implements Language {
             } catch (ParseException e) {
                 out.println("Cannot parse this code");
             } finally {
-                code.close();
+                try {
+                    code.close();
+                } catch (IOException e) {
+                    out.println(e);
+                }
             }
             return profile;
-        }
-
-    @Override
-        public final String[] grammarRules() { return Grammar.rules; }
-
-    @Override
-        public final String name() { return "java8"; }
-
-    @Override
-        public HashMap<String, String[]> extractLibraryBindings(Reader code, String filename) throws IOException {
-            HashMap<String, String[]> bindings = new HashMap<String, String[]>();
-            return bindings;
         }
 
 }
