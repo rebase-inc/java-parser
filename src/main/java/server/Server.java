@@ -35,7 +35,7 @@ public final class Server {
                  public void initChannel(SocketChannel ch) {
                      ChannelPipeline p = ch.pipeline();
                      p.addLast(
-                         new LineBasedFrameDecoder((int)Math.pow(2,20)),
+                         new LineBasedFrameDecoder((int)Math.pow(2,21)),
                          new StringDecoder(CharsetUtil.UTF_8),
                          new JsonObjectDecoder(),
                          new StringEncoder(CharsetUtil.UTF_8),
