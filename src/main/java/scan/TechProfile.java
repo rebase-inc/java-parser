@@ -37,8 +37,8 @@ public final class TechProfile {
         this.language = language;
         data = new int[language.grammarRules().length];
         grammarRulePrefix = language.name()+".__language__.";
-        systemLibraryPrefix = language.name()+".__system__.";
-        thirdPartyLibraryPrefix = language.name()+".__3rd_party__.";
+        systemLibraryPrefix = language.name()+".__standard_library__.";
+        thirdPartyLibraryPrefix = language.name()+".__third_party__.";
     }
 
     public String[] getRuleNames() { return language.grammarRules(); }
