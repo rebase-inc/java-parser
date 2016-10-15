@@ -12,7 +12,7 @@ Go
 ```shell
 . activate
 make-jre-image
-build-docker
+build-dev-docker
 ```
 
 # How to add language support to Parser from an ANTLR grammar
@@ -88,8 +88,45 @@ Language clojure = new Clojure();
 languages_by_name.put(clojure.name(), clojure);
 ```
 
-### Build the project!
+### Build and run the project!
+
+#### On the Mac
+
+##### One-time only setup
 ```shell
-gradle build
+cd ~/repo
+git clone https://github.com/mvanholsteijn/strip-docker-image
+cd parser
+. activate
+make-jre-image
+build-dev-docker
+```
+
+```shell
+brew install gradle
+gradle build -t
+```
+
+#### On Linux for production
+We work off Java 8, which is not available yet on the server image so we need to use a Docker image
+to build our stuff.
+
+##### One-time only setup
+```shell
+cd ~/repo
+git clone https://github.com/mvanholsteijn/strip-docker-image
+cd parser
+. activate
+make-jre-image
+build-gradle
+```
+
+##### Every time you want to build the production image
+```shell
+. activate
+# the gradle container kills itself after 3 hours
+launch-gradle
+_gradle build
+build-production-parser-image
 ```
 

@@ -4,17 +4,22 @@ ls-grammar () {
     docker run --rm -t rebase/antlr4 sh -c "cd /grammars-v4; ls -a */*.g4"
 }
 
-build-docker () {
-    docker build -t rebase/antlr4 docker/antlr4
+build-gradle () {
     docker build -t rebase/gradle docker/gradle
+}
+
+build-dev-docker () {
+    docker build -t rebase/antlr4 docker/antlr4
     docker build -t rebase/parser docker/parser
+}
+
+build-production-parser-image () {
     docker build -t rebase/parser-production -f parser-production-Dockerfile .
 }
 
 _sh-antlr4 () {
     docker run --rm -it rebase/antlr4 sh
 }
-
 
 gen-parser () {
     docker run --rm -v "$PWD/src/main/java/lang":/out -t rebase/antlr4 \
@@ -26,11 +31,6 @@ gen-parser () {
             -no-visitor \
             $1
 }
-
-pull () {
-    docker pull pottava/gradle:2
-}
-
 
 launch-gradle () {
     docker run -d -v $PWD:/app --name gradle rebase/gradle 
