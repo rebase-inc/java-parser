@@ -2,6 +2,7 @@ package lang.lua;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -20,7 +21,7 @@ import scan.TechListener;
 public class Lua implements Language {
 
     @Override
-    public TechProfile scan_contents(Reader code) throws IOException {
+    public TechProfile scan_contents(Reader code, StringReader context) throws IOException {
         ANTLRInputStream input = new ANTLRInputStream(code);
         LuaLexer lexer = new LuaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

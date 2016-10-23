@@ -1,5 +1,7 @@
 package lang.java8;
 
+import java.io.IOException;
+import java.io.StringReader;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,12 +10,14 @@ import java.util.List;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.TypedNode;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.QualifiedNameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.TreeVisitor;
+import org.apache.commons.io.IOUtils;
 
 import scan.TechProfile;
 
@@ -37,6 +41,8 @@ class VisitAll extends TreeVisitor {
 
     private TechProfile profile;
 
+    private String private_packages;
+
     //public HashSet<Node> nodes = new HashSet<>();
 
     //
@@ -56,8 +62,9 @@ class VisitAll extends TreeVisitor {
     //
     public HashMap<String, String> bindings = new HashMap<>();
 
-    public VisitAll(TechProfile profile) {
+    public VisitAll(TechProfile profile, StringReader context) throws IOException {
         this.profile = profile;
+        this.private_packages = IOUtils.toString(context);
     }
 
     private static String Add(String full, String name) {
@@ -106,10 +113,28 @@ class VisitAll extends TreeVisitor {
                 ImportDeclaration imp = (ImportDeclaration)node;
                 NameExpr name = imp.getName();
                 String fqn = fullyQualifiedName(name);
-                typeNameExprToFQN.put(name.getName(), fqn);
-                // we need to map the fqn:fqn because it is legal java to declare a var/field with an FQN
-                // example: java.lang.String foo = "baba";
-                typeNameExprToFQN.put(fqn, fqn);
+                if (this.private_packages.indexOf(fqn) == -1) {
+                    // This fqn was not found in the private packages of this repo.
+                    // We will therefore assume it is from a 3rd-party library
+                    typeNameExprToFQN.put(name.getName(), fqn);
+                    // we need to map the fqn:fqn because it is legal java to declare a var/field with an FQN
+                    // example: java.lang.String foo = "baba";
+                    typeNameExprToFQN.put(fqn, fqn);
+                }
+
+            } else if (node instanceof TypedNode) {
+                // TODO collect all the grammar node that reference a type (search for a 'getType' method)
+                // and add them to the VisitAll class 'process' method.
+                TypedNode expression = (TypedNode)node;
+                String typeName = expression.getType().toString();
+                if (typeNameExprToFQN.containsKey(typeName)) {
+                    String fqnType = typeNameExprToFQN.get(typeName);
+                    if (fqnType.startsWith("java")) {
+                        this.profile.incrementSystem(fqnType);
+                    } else {
+                        this.profile.incrementThirdParty(fqnType);
+                    }
+                }
 
             } else if (node instanceof FieldDeclaration) {
                 FieldDeclaration field = (FieldDeclaration)node;
@@ -123,6 +148,7 @@ class VisitAll extends TreeVisitor {
                         }
                     });
                 }
+                // else we can ignore local types that are implicitly imported.
 
             } else if (node instanceof VariableDeclarationExpr) {
                 VariableDeclarationExpr var = (VariableDeclarationExpr)node;
@@ -134,6 +160,7 @@ class VisitAll extends TreeVisitor {
                         increment(fqnType);
                     });
                 }
+                // else we can ignore local types that are implicitly imported.
 
             } else if (node instanceof MethodCallExpr) {
                 MethodCallExpr call = (MethodCallExpr)node;

@@ -1,6 +1,7 @@
 package server;
 
 import java.io.StringReader;
+import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -14,6 +15,7 @@ import lang.Language;
 import lang.Languages;
 import scan.TechProfile;
 
+// TODO add rsyslog logger so this server is less of a black box
 
 public class Handler extends SimpleChannelInboundHandler<Object> {
 
@@ -28,7 +30,7 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             //
             // languages
             //
-            Languages.languages.forEach((l)->System.out.println(l.name()));
+            //Languages.languages.forEach((l)->System.out.println(l.name()));
             // write a JSON array of languages: "[\"cpp\", \"java\", ..., \"lua\" ]"
             ctx.write(
                     gson.toJson(
@@ -50,18 +52,20 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             ctx.flush();
         } else if (methodNumber == 2) {
             //
-            // scan_content
+            // scan_contents
             //
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
             String code_as_str = gson.fromJson(array.get(2), String.class);
             StringReader code = new StringReader(code_as_str);
+            String context_as_str = gson.fromJson(array.get(3), String.class);
+            StringReader context = new StringReader(context_as_str);
             int end = 80;
             if (code_as_str.length() < end) {
                 end = code_as_str.length();
             }
-            TechProfile profile = language.scan_contents(code);
-            System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
+            TechProfile profile = language.scan_contents(code, context);
+            //System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
             ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
             ctx.flush();
@@ -71,11 +75,12 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             //
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
-            System.out.println("Language: "+language.name());
+            //System.out.println("Language: "+language.name());
             String code = gson.fromJson(array.get(2), String.class);
-            String previous_code = gson.fromJson(array.get(3), String.class);
-            String patch = gson.fromJson(array.get(4), String.class);
-            TechProfile profile = language.scan_patch(code, previous_code, patch);
+            String context = gson.fromJson(array.get(3), String.class);
+            String previous_code = gson.fromJson(array.get(4), String.class);
+            String previous_context = gson.fromJson(array.get(5), String.class);
+            TechProfile profile = language.scan_patch(code, context, previous_code, previous_context);
             System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
             ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
