@@ -36,9 +36,9 @@ public final class TechProfile {
     public TechProfile(Language language) {
         this.language = language;
         data = new int[language.grammarRules().length];
-        grammarRulePrefix = language.name()+".__grammar__.";
-        systemLibraryPrefix = language.name()+".__std_library__.";
-        thirdPartyLibraryPrefix = language.name()+".__3rd_party__.";
+        grammarRulePrefix = "0.";
+        systemLibraryPrefix = "1.";
+        thirdPartyLibraryPrefix = "2.";
     }
 
     public String[] getRuleNames() { return language.grammarRules(); }
@@ -67,14 +67,6 @@ public final class TechProfile {
     }
 
     public HashMap<String, Integer> toMap() {
-        if (_data.isEmpty()) {
-            HashMap<String, Integer> map = new HashMap<String, Integer>();
-            String[] ruleNames = language.grammarRules();
-            for (int i=0; i<data.length; i++) {
-                map.put(ruleNames[i], data[i]);
-            }
-            return map;
-        }
         return _data;
     }
 

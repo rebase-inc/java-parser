@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
+import com.github.javaparser.TokenMgrException;
 import com.github.javaparser.ast.CompilationUnit;
 
 import lang.Language;
@@ -39,8 +40,10 @@ public class Java8 implements Language {
                 //});
                 //visitor.typeNameExprToFQN.forEach((name, qual)-> out.printf("%s: %s\n", name, qual));
 
-            } catch (ParseException e) {
-                out.println(e);
+            } catch (ParseException parseError) {
+                out.println(parseError);
+            } catch (TokenMgrException tokenError) {
+                out.println(tokenError);
             } finally {
                 try {
                     code.close();

@@ -41,6 +41,7 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
                     );
             ctx.write("\n");
             ctx.flush();
+
         } else if (methodNumber == 1) {
             //
             // grammar_rules
@@ -50,15 +51,18 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             ctx.write(gson.toJson(rules));
             ctx.write("\n");
             ctx.flush();
+
         } else if (methodNumber == 2) {
             //
             // scan_contents
             //
             int languageIndex = gson.fromJson(array.get(1), int.class);
             Language language = Languages.get(languageIndex);
-            String code_as_str = gson.fromJson(array.get(2), String.class);
+            // ignore the filename, we don't need it
+            //String filename = gson.fromJson(array.get(2), String.class);
+            String code_as_str = gson.fromJson(array.get(3), String.class);
             StringReader code = new StringReader(code_as_str);
-            String context_as_str = gson.fromJson(array.get(3), String.class);
+            String context_as_str = gson.fromJson(array.get(4), String.class);
             StringReader context = new StringReader(context_as_str);
             int end = 80;
             if (code_as_str.length() < end) {
@@ -66,22 +70,6 @@ public class Handler extends SimpleChannelInboundHandler<Object> {
             }
             TechProfile profile = language.scan_contents(code, context);
             //System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
-            ctx.write(gson.toJson(profile.toMap()));
-            ctx.write("\n");
-            ctx.flush();
-        } else if (methodNumber == 3) {
-            //
-            // scan_patch
-            //
-            int languageIndex = gson.fromJson(array.get(1), int.class);
-            Language language = Languages.get(languageIndex);
-            //System.out.println("Language: "+language.name());
-            String code = gson.fromJson(array.get(2), String.class);
-            String context = gson.fromJson(array.get(3), String.class);
-            String previous_code = gson.fromJson(array.get(4), String.class);
-            String previous_context = gson.fromJson(array.get(5), String.class);
-            TechProfile profile = language.scan_patch(code, context, previous_code, previous_context);
-            System.out.println(Arrays.toString(profile.toMap().entrySet().toArray()));
             ctx.write(gson.toJson(profile.toMap()));
             ctx.write("\n");
             ctx.flush();
