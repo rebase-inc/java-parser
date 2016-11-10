@@ -9,8 +9,8 @@ CMD [ \
         "/usr/lib/jvm/java-8-openjdk-amd64/bin/java", \
         "-server", \
         "-Xmn1g", \
-        "-Xms4g", \
-        "-Xmx4g", \
+        "-Xms1g", \
+        "-Xmx1g", \
         "-XX:+HeapDumpOnOutOfMemoryError", \
         "-XX:HeapDumpPath=/parser/dump-`date`.hprof", \
         "-cp", \

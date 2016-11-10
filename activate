@@ -10,11 +10,11 @@ build-gradle () {
 
 build-dev-docker () {
     docker build -t rebase/antlr4 docker/antlr4
-    docker build -t rebase/parser docker/parser
+    docker build -t rebase/dev-parser docker/parser
 }
 
 build-production-parser-image () {
-    docker build -t rebase/parser-production -f parser-production-Dockerfile .
+    docker build -t rebase/pro-parser -f parser-production-Dockerfile .
 }
 
 _sh-antlr4 () {
